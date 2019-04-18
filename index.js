@@ -478,50 +478,50 @@ Peer.prototype._destroy = function (err, cb) {
 }
 
 Peer.prototype._setupData = function (event) {
-  var self = this
-  if (!event.channel) {
-    // In some situations `pc.createDataChannel()` returns `undefined` (in wrtc),
-    // which is invalid behavior. Handle it gracefully.
-    // See: https://github.com/feross/simple-peer/issues/163
-    return self.destroy(makeError('Data channel event is missing `channel` property', 'ERR_DATA_CHANNEL'))
-  }
+  // var self = this
+  // if (!event.channel) {
+  //   // In some situations `pc.createDataChannel()` returns `undefined` (in wrtc),
+  //   // which is invalid behavior. Handle it gracefully.
+  //   // See: https://github.com/feross/simple-peer/issues/163
+  //   return self.destroy(makeError('Data channel event is missing `channel` property', 'ERR_DATA_CHANNEL'))
+  // }
 
-  self._channel = event.channel
-  self._channel.binaryType = 'arraybuffer'
+  // self._channel = event.channel
+  // self._channel.binaryType = 'arraybuffer'
 
-  if (typeof self._channel.bufferedAmountLowThreshold === 'number') {
-    self._channel.bufferedAmountLowThreshold = MAX_BUFFERED_AMOUNT
-  }
+  // if (typeof self._channel.bufferedAmountLowThreshold === 'number') {
+  //   self._channel.bufferedAmountLowThreshold = MAX_BUFFERED_AMOUNT
+  // }
 
-  self.channelName = self._channel.label
+  // self.channelName = self._channel.label
 
-  self._channel.onmessage = function (event) {
-    self._onChannelMessage(event)
-  }
-  self._channel.onbufferedamountlow = function () {
-    self._onChannelBufferedAmountLow()
-  }
-  self._channel.onopen = function () {
-    self._onChannelOpen()
-  }
-  self._channel.onclose = function () {
-    self._onChannelClose()
-  }
-  self._channel.onerror = function (err) {
-    self.destroy(makeError(err, 'ERR_DATA_CHANNEL'))
-  }
+  // self._channel.onmessage = function (event) {
+  //   self._onChannelMessage(event)
+  // }
+  // self._channel.onbufferedamountlow = function () {
+  //   self._onChannelBufferedAmountLow()
+  // }
+  // self._channel.onopen = function () {
+  //   self._onChannelOpen()
+  // }
+  // self._channel.onclose = function () {
+  //   self._onChannelClose()
+  // }
+  // self._channel.onerror = function (err) {
+  //   self.destroy(makeError(err, 'ERR_DATA_CHANNEL'))
+  // }
 
-  // HACK: Chrome will sometimes get stuck in readyState "closing", let's check for this condition
-  // https://bugs.chromium.org/p/chromium/issues/detail?id=882743
-  var isClosing = false
-  self._closingInterval = setInterval(function () { // No "onclosing" event
-    if (self._channel && self._channel.readyState === 'closing') {
-      if (isClosing) self._onChannelClose() // closing timed out: equivalent to onclose firing
-      isClosing = true
-    } else {
-      isClosing = false
-    }
-  }, CHANNEL_CLOSING_TIMEOUT)
+  // // HACK: Chrome will sometimes get stuck in readyState "closing", let's check for this condition
+  // // https://bugs.chromium.org/p/chromium/issues/detail?id=882743
+  // var isClosing = false
+  // self._closingInterval = setInterval(function () { // No "onclosing" event
+  //   if (self._channel && self._channel.readyState === 'closing') {
+  //     if (isClosing) self._onChannelClose() // closing timed out: equivalent to onclose firing
+  //     isClosing = true
+  //   } else {
+  //     isClosing = false
+  //   }
+  // }, CHANNEL_CLOSING_TIMEOUT)
 }
 
 Peer.prototype._read = function () {}
