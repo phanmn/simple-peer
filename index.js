@@ -568,6 +568,9 @@ Peer.prototype._onIceStateChange = function () {
   if (iceConnectionState === 'closed') {
     self.destroy(new Error('Ice connection closed.'))
   }
+  if (iceConnectionState === 'disconnected') {
+    self.destroy()
+  }
 }
 
 Peer.prototype.getStats = function (cb) {
